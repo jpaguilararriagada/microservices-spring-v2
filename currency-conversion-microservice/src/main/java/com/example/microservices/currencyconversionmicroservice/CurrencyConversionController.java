@@ -52,6 +52,6 @@ public class CurrencyConversionController {
                 quantity,
                 currencyConversion.getConversionMultiple(),
                 quantity.multiply(currencyConversion.getConversionMultiple()),
-                "8100 %s".formatted("feign"));
+                "%s %s".formatted(currencyConversion.getEnvironment()  ,"feign"));
     }
 }
