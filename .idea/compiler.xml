@@ -9,11 +9,13 @@
         <module name="currency-conversion-microservice" />
         <module name="api-gateway" />
         <module name="currency-exchange-service" />
-        <module name="limits-service" />
         <module name="spring-cloud-config-server" />
         <module name="naming-server" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="limits-service" target="15" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
