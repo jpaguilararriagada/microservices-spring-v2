@@ -15,9 +15,36 @@ public class ApiGatewayConfiguration {
 
     @Bean
     public RouteLocator gatewayRouter(RouteLocatorBuilder builder){
-        Function<PredicateSpec, Buildable<Route>> routeFunction= p-> p.path("/entries").uri("https://api.publicapis.org/entries");
+
         return builder.routes()
-                .route(routeFunction)
+                .route(p -> p
+                        .path("/get")
+                        .filters(f -> f
+                               // .rewritePath("/goto","/get")
+                                .addRequestHeader("MyHeader", "MyURI")
+                                .addRequestParameter("Param", "MyValue"))
+                        .uri("http://httpbin.org:80"))
+                // Si la url que llega concuerda con esto entonces le digo que vaya al servicio usando el naming service registry y el balanceo de carga
+                .route(p ->
+                        p.path("/currency-exchange/**")
+                            .uri("lb://currency-exchange")
+                )
+                .route(p ->
+                        p.path("/currency-conversion/**")
+                                .uri("lb://currency-conversion")
+                )
+                .route(p ->
+                        p.path("/currency-conversion-feign/**")
+                                .uri("lb://currency-conversion")
+                )
+                .route(p ->
+                        p.path("/currency-conversion-new/**")
+                                .filters(f-> f.rewritePath(
+                                        "/currency-conversion-new/(?<segment>.*)",
+                                        "/currency-conversion-feign/${segment}"
+                                ))
+                                .uri("lb://currency-conversion")
+                )
                 .build();
     }
 }
